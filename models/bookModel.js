@@ -1,7 +1,6 @@
-import { Schema } from 'mongoose';
 import mongoose from 'mongoose';
 
-const bookModel = new Schema({
+const bookModel = new mongoose.Schema({
   title: { type: String },
   author: { type: String },
   genre: { type: String },

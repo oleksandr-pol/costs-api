@@ -2,10 +2,10 @@
   "name": "costs-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/app.js",
   "scripts": {
     "start": "npm-run-all --parallel serve lint:watch",
-    "serve": "nodemon --exec babel-node app",
+    "serve": "nodemon --exec babel-node src/app.js",
     "lint": "esw .",
     "lint:watch": "npm run lint -- --watch"
   },
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongoose": "^5.4.19"
   },

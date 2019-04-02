@@ -1,3 +1,5 @@
+import { ClientError} from '../error-handles/clientError';
+
 export default function costsController(Cost) {
   return {
     get,
@@ -5,36 +7,24 @@ export default function costsController(Cost) {
     getById
   };
 
-  function get(req, res) {
+  function get(req, res, next) {
     // @TO-DO: validate query params
-    Cost.find(req.query, (err, books) => {
-      if (err) {
-        return res.send(err);
-      }
-
-      return res.json(books);
-    });
+    Cost.find(req.query).then(costs => res.json(costs))
+      .catch(err => next(new ClientError(400, err)));
   }
 
-  function post(req, res) {
+  function post(req, res, next) {
     // @TO-DO: validate body
     const book = new Cost(req.body);
     return book.save()
       .then(cost => res.status(201).json(cost))
-      .catch(err => {
-        res.status(400).json(err)
-        return err;
-      });
+      .catch(err => next(new ClientError(400, err)));
   }
 
-  function getById(req, res) {
+  function getById(req, res, next) {
     // @TO-DO: validate params
-    Cost.findById(req.params.bookId, (err, book) => {
-      if (err) {
-        return res.send(err);
-      }
-
-      return res.json(book);
-    });
+    Cost.findById(req.params.costId)
+      .then(cost => res.json(cost))
+      .catch(err => next(new ClientError(400, err)));
   }
 }

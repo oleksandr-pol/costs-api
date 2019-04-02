@@ -11,5 +11,5 @@ costRouter.route('/costs')
   .post(controller.post)
   .get(controller.get);
 
-costRouter.route('/costs/:bookId')
+costRouter.route('/costs/:costId')
   .get(controller.getById);

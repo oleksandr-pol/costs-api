@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import costRouter from './routes/costRouter';
+import { clientErrorHandler } from './error-handles/clientErrorHandler';
 
 const port = process.env.PORT || 3000;
 
@@ -15,7 +16,8 @@ mongoose.connection.once('open', () => {
   process.stdout.write('Connected to MongoDB\n');
   app.listen(port, () => process.stdout.write(`Running on port ${port}\n`));
 });
-// @TODO: add error handling
+
 app.use(bodyParser.json());
 app.use('/api', costRouter);
+app.use(clientErrorHandler);
 

@@ -19,13 +19,12 @@ export default function costsController(Cost) {
   function post(req, res) {
     // @TO-DO: validate body
     const book = new Cost(req.body);
-    book.save((err, cost) => {
-      if (err) {
-        return res.status(400).json(err);
-      }
-
-      return res.status(201).json(cost);
-    });
+    return book.save()
+      .then(cost => res.status(201).json(cost))
+      .catch(err => {
+        res.status(400).json(err)
+        return err;
+      });
   }
 
   function getById(req, res) {

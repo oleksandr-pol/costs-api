@@ -1,8 +1,8 @@
-import config from '../../../config';
-import server from '../../app';
+import config from '../../config';
+import server from '../../src/app';
 import request from 'request';
 import mongoose from 'mongoose';
-import Cost from '../../models/costModel';
+import Cost from '../../src/models/costModel';
 import { expect } from 'chai';
 
 describe('server api', () => {

@@ -8,7 +8,7 @@
     "serve": "nodemon --exec babel-node src/app.js",
     "lint": "esw .",
     "lint:watch": "npm run lint -- --watch",
-    "test:integ": "NODE_ENV=test mocha --reporter progress --require @babel/register src/test/integration/**/*"
+    "test:integ": "NODE_ENV=test mocha --reporter progress --require @babel/register test/integration/**/*"
   },
   "keywords": [],
   "author": "",

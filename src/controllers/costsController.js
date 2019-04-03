@@ -14,9 +14,9 @@ export default function costsController(Cost) {
   }
 
   function post(req, res, next) {
-    // @TO-DO: validate body
-    const book = new Cost(req.body);
-    return book.save()
+    const cost = new Cost(req.body);
+
+    return cost.save()
       .then(cost => res.status(201).json(cost))
       .catch(err => next(new ClientError(400, err)));
   }

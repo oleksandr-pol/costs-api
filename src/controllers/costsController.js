@@ -1,9 +1,12 @@
+import moment from 'moment';
+
 export default function costsController(Cost) {
   return {
     get,
     post,
     findCost,
-    getCost
+    getCost,
+    getTodayCosts
   };
 
   async function get(ctx) {
@@ -36,5 +39,16 @@ export default function costsController(Cost) {
 
   async function getCost(ctx) {
     ctx.body = ctx.cost;
+  }
+
+  async function getTodayCosts(ctx) {
+    try {
+      ctx.body = await Cost
+        .find({ createdAt: { $gte: moment.utc().startOf('day') }})
+        .sort({ createdAt: 1 });
+
+    } catch(e) {
+      ctx.throw(400, e.message);
+    }
   }
 }

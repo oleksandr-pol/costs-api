@@ -9,6 +9,7 @@ export const costs = new Router({
 const controller = costsController(Cost);
 
 costs.get('/costs', controller.get)
+  .get('/costs/today', controller.getTodayCosts)
   .post('/costs', controller.post)
   .param('cost', controller.findCost)
-  .get('/costs/:cost', controller.getCost);
+  .get('/costs/cost/:cost', controller.getCost);

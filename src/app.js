@@ -1,11 +1,10 @@
-import express from 'express';
+import Koa from 'koa';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
-import costRouter from './routes/costRouter';
-import { clientErrorHandler } from './error-handles/clientErrorHandler';
+import { costs } from './routes/costRouter';
 import config from '../config';
+import * as fromMiddleware from './middleware';
 
-const app = express();
+const app = new Koa();
 mongoose.connect(config.dbUrl, { useNewUrlParser: true });
 
 mongoose.connection
@@ -15,9 +14,11 @@ mongoose.connection.once('open', () => {
   process.stdout.write('Connected to MongoDB\n');
 });
 
-app.use(bodyParser.json());
-app.use('/api', costRouter);
-app.use(clientErrorHandler);
+fromMiddleware.addLogger(app);
+fromMiddleware.addErrorHandler(app);
+fromMiddleware.addBodyParser(app);
+
+app.use(costs.routes());
 
 export default app.listen(config.port, () =>
   process.stdout.write(`Running on port ${config.port}\n`));

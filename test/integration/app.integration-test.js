@@ -10,7 +10,7 @@ describe('server api', () => {
     Cost.deleteMany({ }).exec();
   });
 
-  it('should return costs array', done => {
+  it('should return costs array (GET:/api/costs)', done => {
     const mockCost = {
       value: 100,
       title: 'Cost',

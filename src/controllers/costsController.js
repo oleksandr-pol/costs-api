@@ -1,30 +1,40 @@
-import { ClientError} from '../error-handles/clientError';
-
 export default function costsController(Cost) {
   return {
     get,
     post,
-    getById
+    findCost,
+    getCost
   };
 
-  function get(req, res, next) {
+  async function get(ctx) {
     // @TO-DO: validate query params
-    Cost.find(req.query).then(costs => res.json(costs))
-      .catch(err => next(new ClientError(400, err)));
+    try {
+      ctx.body = await Cost.find(ctx.query);
+    } catch(e) {
+      ctx.throw(404, e.message)
+    }
   }
 
-  function post(req, res, next) {
-    const cost = new Cost(req.body);
-
-    return cost.save()
-      .then(cost => res.status(201).json(cost))
-      .catch(err => next(new ClientError(400, err)));
+  async function post(ctx) {
+    try {
+      const cost = new Cost(ctx.request.body);
+      ctx.body = await cost.save();
+      ctx.status = 201;
+    } catch(e) {
+      ctx.throw(400, e.message);
+    }
   }
 
-  function getById(req, res, next) {
-    // @TO-DO: validate params
-    Cost.findById(req.params.costId)
-      .then(cost => res.json(cost))
-      .catch(err => next(new ClientError(400, err)));
+  async function findCost(id, ctx, next) {
+    try {
+      ctx.cost = await Cost.findById(id);
+      await next();
+    } catch(e) {
+      ctx.throw(404, e.message);
+    }
+  }
+
+  async function getCost(ctx) {
+    ctx.body = ctx.cost;
   }
 }

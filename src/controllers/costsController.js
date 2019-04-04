@@ -6,7 +6,8 @@ export default function costsController(Cost) {
     post,
     findCost,
     getCost,
-    getTodayCosts
+    getTodayCosts,
+    update
   };
 
   async function get(ctx) {
@@ -47,6 +48,18 @@ export default function costsController(Cost) {
         .find({ createdAt: { $gte: moment.utc().startOf('day') }})
         .sort({ createdAt: 1 });
 
+    } catch(e) {
+      ctx.throw(e);
+    }
+  }
+
+  async function update(ctx) {
+    try {
+      ctx.body = await Cost.findOneAndUpdate(
+        { _d: ctx.cost._id },
+        { $set: ctx.request.body },
+        { useFindAndModify: false }
+      );
     } catch(e) {
       ctx.throw(400, e.message);
     }

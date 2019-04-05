@@ -1,12 +1,12 @@
 import Router from 'koa-router';
-import Cost from '../models/costModel';
 import costsController from '../controllers/costsController';
+import db from '../db';
 
 export const costs = new Router({
   prefix: '/api'
 });
 
-const controller = costsController(Cost);
+const controller = costsController(db);
 
 costs.get('/costs', controller.get)
   .get('/costs/today', controller.getTodayCosts)

@@ -1,6 +1,4 @@
-import moment from 'moment';
-
-export default function costsController(Cost) {
+export default function costsController(db) {
   return {
     get,
     post,
@@ -13,7 +11,7 @@ export default function costsController(Cost) {
   async function get(ctx) {
     // @TO-DO: validate query params
     try {
-      ctx.body = await Cost.find(ctx.query);
+      ctx.body = await db.get(ctx.query);
     } catch(e) {
       ctx.throw(404, e.message)
     }
@@ -21,8 +19,7 @@ export default function costsController(Cost) {
 
   async function post(ctx) {
     try {
-      const cost = new Cost(ctx.request.body);
-      ctx.body = await cost.save();
+      ctx.body = await db.save(ctx.request.body);
       ctx.status = 201;
     } catch(e) {
       ctx.throw(400, e.message);
@@ -31,7 +28,7 @@ export default function costsController(Cost) {
 
   async function findCost(id, ctx, next) {
     try {
-      ctx.cost = await Cost.findById(id);
+      ctx.cost = await db.getById(id);
       await next();
     } catch(e) {
       ctx.throw(404, e.message);
@@ -44,10 +41,7 @@ export default function costsController(Cost) {
 
   async function getTodayCosts(ctx) {
     try {
-      ctx.body = await Cost
-        .find({ createdAt: { $gte: moment.utc().startOf('day') }})
-        .sort({ createdAt: 1 });
-
+      ctx.body = await db.getTodayCosts();
     } catch(e) {
       ctx.throw(e);
     }
@@ -55,10 +49,9 @@ export default function costsController(Cost) {
 
   async function update(ctx) {
     try {
-      ctx.body = await Cost.findOneAndUpdate(
-        { _d: ctx.cost._id },
-        { $set: ctx.request.body },
-        { useFindAndModify: false }
+      ctx.body = await db.updateById(
+        ctx.cost._id,
+        ctx.request.body
       );
     } catch(e) {
       ctx.throw(400, e.message);

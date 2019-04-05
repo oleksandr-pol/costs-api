@@ -1,4 +1,4 @@
-export default function costsController(db) {
+export default function costsController(db, validator) {
   return {
     get,
     post,
@@ -10,14 +10,16 @@ export default function costsController(db) {
 
   async function get(ctx) {
     try {
+      await validator.checkQuery(ctx.query);
       ctx.body = await db.get(ctx.query);
     } catch(e) {
-      ctx.throw(404, e.message)
+      ctx.throw(400, e.message);
     }
   }
 
   async function post(ctx) {
     try {
+      await validator.checkCost(ctx.request.body);
       ctx.body = await db.save(ctx.request.body);
       ctx.status = 201;
     } catch(e) {
@@ -27,10 +29,11 @@ export default function costsController(db) {
 
   async function findCost(id, ctx, next) {
     try {
+      await validator.checkId(id);
       ctx.cost = await db.getById(id);
       await next();
     } catch(e) {
-      ctx.throw(404, e.message);
+      ctx.throw(400, e.message);
     }
   }
 
@@ -39,21 +42,15 @@ export default function costsController(db) {
   }
 
   async function getTodayCosts(ctx) {
-    try {
-      ctx.body = await db.getTodayCosts();
-    } catch(e) {
-      ctx.throw(e);
-    }
+    ctx.body = await db.getTodayCosts();
   }
 
   async function update(ctx) {
-    try {
-      ctx.body = await db.updateById(
-        ctx.cost._id,
-        ctx.request.body
-      );
-    } catch(e) {
-      ctx.throw(400, e.message);
-    }
+    await validator.checkCost(ctx.request.body);
+
+    ctx.body = await db.updateById(
+      ctx.cost._id,
+      ctx.request.body
+    );
   }
 }

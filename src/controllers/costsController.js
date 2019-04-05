@@ -9,7 +9,6 @@ export default function costsController(db) {
   };
 
   async function get(ctx) {
-    // @TO-DO: validate query params
     try {
       ctx.body = await db.get(ctx.query);
     } catch(e) {

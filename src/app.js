@@ -22,3 +22,5 @@ app.use(costs.routes());
 
 export default app.listen(config.port, () =>
   process.stdout.write(`Running on port ${config.port}\n`));
+
+process.on('exit', () => mongoose.disconnect());

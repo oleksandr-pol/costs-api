@@ -2,17 +2,18 @@ import Router from 'koa-router';
 import costsController from '../controllers/costsController';
 import validator from '../schemas';
 import db from '../db';
+import { setConstId } from '../middleware/setCostId';
 
 export const costs = new Router({
   prefix: '/api'
 });
 
-const controller = costsController(db, validator);
+const controller = costsController(db);
 
 costs
-  .get('/costs', controller.get)
+  .get('/costs', validator.checkQuery, controller.get)
   .get('/costs/today', controller.getTodayCosts)
-  .post('/costs', controller.post)
-  .param('cost', controller.findCost)
+  .post('/costs', validator.checkCost, controller.post)
+  .param('cost', setConstId, validator.checkId, controller.findCost)
   .get('/costs/cost/:cost', controller.getCost)
-  .put('/costs/cost/:cost', controller.update);
+  .put('/costs/cost/:cost', validator.checkCost, controller.update);
